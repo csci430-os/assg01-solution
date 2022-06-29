@@ -223,31 +223,6 @@ void HypotheticalMachineSimulator::initializeMemory(int memoryBaseAddress, int m
   // 2.1 allocate a new array into the memory member variable of the correct
   //    size to hold requested memory e.g. memory = new int[memorySize];
   // 3. you should ensure that all of of memory is initialized to 0
-
-  if (memoryBoundsAddress > 1000)
-  {
-    string msg = "Error: invalid memory bounds address: " + memoryBoundsAddress;
-    throw SimulatorException(msg);
-  }
-
-  if (memoryBaseAddress < 0)
-  {
-    string msg = "Error: invalid memory bounds address: " + memoryBoundsAddress;
-    throw SimulatorException(msg);
-  }
-
-  this->memoryBaseAddress = memoryBaseAddress;
-  this->memoryBoundsAddress = memoryBoundsAddress;
-  this->memorySize = memoryBoundsAddress - memoryBaseAddress;
-
-  if (memory)
-  {
-    delete[] memory;
-  }
-
-  memory = new int[memorySize];
-
-  // initialize all this memory to 0;
 }
 
 /**
