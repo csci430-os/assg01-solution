@@ -54,7 +54,7 @@ $(TEST_TARGET) : $(test_obj) $(catch_test_obj) $(exception_obj) $(template_files
 	$(GCC) $(GCC_FLAGS) $(test_obj) $(catch_test_obj) $(exception_obj) -o $@
 
 
-## sim         : Build and link together the main simulation executable
+## sim          : Build and link together the main simulation executable
 ##
 $(SIM_TARGET) : $(sim_obj) $(exception_obj) $(template_files)
 	$(GCC) $(GCC_FLAGS) $(sim_obj) $(exception_obj) -o $@
