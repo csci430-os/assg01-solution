@@ -82,19 +82,8 @@ public:
 
   // program loading and initializtion
   void loadProgram(string simulationFile);
-  void initializeMemory(int memoryBaseAddress, int memoryBoundsAddress);
 
-  // program execution
-  int translateAddress(int virtAddr) const;
-  void pokeAddress(int simAddr, int value);
-  int peekAddress(int simAddr) const;
-  void fetch();
-  void execute();
-  void executeLoad();
-  void executeStore();
-  void executeAdd();
-  void executeSub();
-  void executeJmp();
+  // program execution, declare fetch and execute member functions here
   int runSimulation(int maxCycles = 100, bool verbose = false);
 
   // accessor methods, mostly for testing

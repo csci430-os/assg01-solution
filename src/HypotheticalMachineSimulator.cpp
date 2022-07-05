@@ -174,7 +174,10 @@ void HypotheticalMachineSimulator::loadProgram(string programFile)
   {
     throw SimulatorException("Error: expecting MEM from program file");
   }
-  initializeMemory(memoryBaseAddress, memoryBoundsAddress);
+  
+  // Task 3.2: uncomment this call to initializeMemory() once you have completed
+  // task 3
+  // initializeMemory(memoryBaseAddress, memoryBoundsAddress);
 
   // Finally load memory contents.  Remaining lines of file from
   // current line to last line are key/value pairs of
@@ -183,7 +186,9 @@ void HypotheticalMachineSimulator::loadProgram(string programFile)
   int addr;
   while (programStream >> addr >> value)
   {
-    pokeAddress(addr, value);
+    // Task 3.2: uncomment this call to pokeAddress() once you have completed task 3
+    //pokeAddress(addr, value);
+    
     // keep track of memory addresses for display purposes
     memoryAddressList.push_back(addr);
   }
@@ -213,17 +218,7 @@ void HypotheticalMachineSimulator::loadProgram(string programFile)
  *   address.  Thus we can only address memory from 000 - 999
  *   given the limits of the expected opcode format.
  */
-void HypotheticalMachineSimulator::initializeMemory(int memoryBaseAddress, int memoryBoundsAddress)
-{
-  // initializeMemory steps
-  // 1. set the base, bounds and size member variables
-  // 2.0 if memory is already allocated, free it up first.  This is because we
-  //   can reuse a simulation many times, thus we should free past old memory
-  //   before allocating a new block of memory
-  // 2.1 allocate a new array into the memory member variable of the correct
-  //    size to hold requested memory e.g. memory = new int[memorySize];
-  // 3. you should ensure that all of of memory is initialized to 0
-}
+// your implementation of initializeMemory() should go here
 
 /**
  * @brief memory address translation
@@ -240,19 +235,7 @@ void HypotheticalMachineSimulator::initializeMemory(int memoryBaseAddress, int m
  * @returns int Returns the calculated real address translation of the simulated
  *   address.
  */
-int HypotheticalMachineSimulator::translateAddress(int simAddress) const
-{
-  // need to do the actual translation and return the calculated real address
-  // here.  You need to make a calculation using the memoryBaseAddress
-  // here to translate into the real address.
-  //
-  // also, this method should throw an exception if the address is out
-  // of bounds.  You should check that the address is less than the base address
-  // or greater than the bounds address, and throw an exception if the reference
-  // is invalid.  You can trhow an exception like this:
-  // throw SimulatorException("translateAddress: Memory bounds access error");
-  return 0;
-}
+// your implementation of translateAddress() should go here
 
 /**
  * @brief poke memory
@@ -267,14 +250,7 @@ int HypotheticalMachineSimulator::translateAddress(int simAddress) const
  * @param value The value to be written into the indicated virtual
  *   address.
  */
-void HypotheticalMachineSimulator::pokeAddress(int simAddress, int value)
-{
-  // 1. you should reuse your translate address function you did in
-  // previous step here.  Given the simulation address, translate it
-  // to a real address / index into the memory[] array
-  // 2. when you have the correct real address / index, you can then simply
-  //    "poke" the required value into that address
-}
+// your implementation of pokeAddress() should go here
 
 /**
  * @brief peek memory
@@ -290,15 +266,7 @@ void HypotheticalMachineSimulator::pokeAddress(int simAddress, int value)
  * @returns int The value that is currently in the indicated virtual
  *   memory address we are reading from and returning.
  */
-int HypotheticalMachineSimulator::peekAddress(int simAddress) const
-{
-  // 1. again need to start by reusing translateAddress to translate the
-  //    simulation memory address into the correct index of our memory[]
-  //    array.
-  // 2. then when you have the real address / index, you can read that out
-  //    of memory[] and return the result
-  return 0; // need to fix this and return the actual value you peek from memory
-}
+// your implementation of peekAddress() should go here
 
 /**
  * @brief fetch phase
@@ -308,13 +276,7 @@ int HypotheticalMachineSimulator::peekAddress(int simAddress) const
  * instruction, which is basically all that occurs during the fetch
  * phase of a cycle.
  */
-void HypotheticalMachineSimulator::fetch()
-{
-  // load the instruction register, using PC as index of
-  // instruction to fetch.  You should reuse your peekAddress
-  // to get the contents of memory here pointed to by the pc, and then
-  // store that instruction into the instruciton register.
-}
+// your implementation of fetch() should go here
 
 /**
  * @brief execute phase
@@ -327,31 +289,7 @@ void HypotheticalMachineSimulator::fetch()
  * PC is also incremented during the execute phase in preparation
  * for the next fetch.
  */
-void HypotheticalMachineSimulator::execute()
-{
-  // You need to do the following tasks for execute
-  // 1. if ir < 0 or ir > 9999 thrown an exception as the instruction makes no sense
-  // 2. translate the opcode and address.  The ir should have the fetched instruction we
-  //    are executing, and you just check that the ir makes sense.  The first decimal digit
-  // 2.1 the ir has an int value with 4 decimal (base 10) digits, like XYYY.  The first
-  //     decimal digit (the thousands place) represents the instruction.  You can use
-  //     integer division to determine opcode represented by the instruction.  You should
-  //     extract the opcode and store it into the irOpcode member variable.  You may need to
-  //     perform a static_cast<OpcodeMnemonic> on the integer value 0-9 that you determine
-  //     is the opcode before assigning it into the irOpcode field.
-  // 2.2 Then the remaining 3 digits contain the reference address.  You can use modulus
-  //     operator (%) to extract the 3 decimal digits on the end of the instruction and save
-  //     them to the irAddress member field.
-  // 3. once the instruction is translated into opcode and address, you should increment
-  //    the pc (call the incrementPC() function).  Only increment the PC if the opcode is not
-  //    a NOOP_HALT instruction.  The NOOP_HALT should cause the program to stop immediately,
-  //    including that the pc stops incrementing for the fetch/execute cycles.
-  // 4. Finally we need to actually execute the specific instruction indicated by the
-  //    irOpcode.  You should create a switch statement using the irOpcode, and call
-  //    executeLoad, executeStore, executeJmp, executeSub, executeAdd member functions
-  //    given the indicated opcode.  Then we will need to write those 5 functions to
-  //    actually perform the simulated machine instructions.
-}
+// your implementation of execute() should go here
 
 /**
  * @brief execute load
@@ -359,12 +297,7 @@ void HypotheticalMachineSimulator::execute()
  * Execute a load instruction.
  * @pre current irOpcode is a LOAD when called.
  */
-void HypotheticalMachineSimulator::executeLoad()
-{
-  // load is pretty simple, need to copy the value from memory pointed to by
-  // irAddress into the accumulator.  You should use the peekAddress() function
-  // here to actually access the value you are loading into the ac
-}
+// your implementation of executeLoad() should go here
 
 /**
  * @brief execute store
@@ -372,12 +305,7 @@ void HypotheticalMachineSimulator::executeLoad()
  * Execute a store instruction.
  * @pre current irOpcode is a STORE when called
  */
-void HypotheticalMachineSimulator::executeStore()
-{
-  // store is the reverse of load.  You will need to use pokeAddress() here and the
-  // irAddress and ac to copy the value in the ac back to memory pointed to by the
-  // irAddress
-}
+// your implementation of executeStore() should go here
 
 /**
  * @brief execute add
@@ -385,13 +313,7 @@ void HypotheticalMachineSimulator::executeStore()
  * Execute an add instruction.
  * @[re current irOpcode is an ADD when called
  */
-void HypotheticalMachineSimulator::executeAdd()
-{
-  // add arithemetic instruction is an example of a data processing instruction
-  // that performs some calculation.  You need to use peekAddress to get the data
-  // value that is referenced by the irAddress, and add that to the accumulator.
-  // The result of the addition should be stored back into the accumulator.
-}
+// your implementation of executeAdd() should go here
 
 /**
  * @brief execute sub
@@ -399,12 +321,7 @@ void HypotheticalMachineSimulator::executeAdd()
  * Execute a subtract instruction.
  * @pre current irOpcode is a SUB when called
  */
-void HypotheticalMachineSimulator::executeSub()
-{
-  // sub is our other data processing instruction.  Should be pretty much identical
-  // to your add, but you want to subtract the referenced data in memory from the ac
-  // and store back to ac
-}
+// your implementation of executeSub() should go here
 
 /**
  * @brief execute jmp
@@ -412,12 +329,7 @@ void HypotheticalMachineSimulator::executeSub()
  * Execute a jump instruction.
  * @pre current irOpcode is a JMP when called
  */
-void HypotheticalMachineSimulator::executeJmp()
-{
-  // The jump instruction works by changing the program counter.  This operation
-  // should be the simplest one yet, all you have to do is change the pc to the
-  // value asked for in the irAddress reference.
-}
+// your implementation of executeJmp() should go here
 
 /**
  * @brief run simulation
@@ -631,11 +543,15 @@ ostream& operator<<(ostream& out, const HypotheticalMachineSimulator& sim)
   out << endl;
 
   out << "Memory" << endl << "------" << endl;
+  // uncomment the following once you have completed task 7 so that system tests
+  // and full simulations will work
+  /*
   for (auto addr : sim.memoryAddressList)
   {
     cout << setw(3) << left << addr << ": " << sim.peekAddress(addr) << endl;
   }
-
+  */
+  
   cout << endl;
 
   return out;

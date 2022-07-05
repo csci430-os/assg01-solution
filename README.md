@@ -268,6 +268,9 @@ repository.
 
 ## Task 3: Implement the `peekAddress()` and `pokeAddress()` simulation member methods
 
+There are two defines for task 3, only define `task3_1` initially when
+first working on the `peekAddress()` and `pokeAddress()` functions.
+
 Implement the **peekAddress()** and **pokeAddress()** functions and
 pass the unit tests for those functions.  These functions are tested
 by using poke to write a value somewhere in memory, then we peek the
@@ -278,6 +281,17 @@ translating the given address to a real address.  Then for poke you
 need to save the indicated value into the correct location of your
 `memory[]` array.  And likewise for peek, you need to read out a value
 from your `memory[]` array and return it.
+
+
+Once your memory peeks and pokes are working, you can try out the
+tests of the `loadProgram()` function.  This function needs to use your
+`initializeMemory()` from task 1, and the `pokeAddress()` function
+you just created.  Define the `task3_2` tests in the test file.  But also,
+the calls to `initializeMemory()` and `pokeAddress()` have been commented
+out of the `loadProgram()` to get the code to compile.  You should uncomment
+the calls to these function in the `loadProgram()` member method, then
+see if the Task 3.2 tests pass when loading full programs for the
+simulation.
 
 Once you have completed this task and are satisfied with your solution, commit
 your changes to the `Feedback` pull request of your GitHub classroom
@@ -354,11 +368,12 @@ Finally put it all together and test a full simulation using the
 call the **runSimulation()** method to see if they halt when expected
 and end up with the expected final calculations in memory and in the
 AC.  Your `runSimulation()` For this assignment you have been given
-the code for the `runSimulation()` method, but the code is commented
-out because it relies on you correctly implementing the above
-functions first to work correctly.  Uncomment the code in the
-`runSimulation()` method and the final unit tests should now be
-passing for you.
+the code for the `runSimulation()` method.  However this method calls
+your `fetch()` and `execute()` member function implementations, so the
+code is commented out.  Uncomment the implementation of `runSimulation()`
+and enable the Task 7 tests.  If your implementations of the previous
+member functions are correct, you should be able to successfully run
+full simulations now and pass the Task 7 tests.
 
 Once you have completed this task and are satisfied with your solution, commit
 your changes to the `Feedback` pull request of your GitHub classroom
@@ -367,10 +382,13 @@ repository.
 # System Tests: Putting it all Together
 
 Once all of the unit tests are passing, you can begin working on the system
-tests.  For this first assignment you do not have to do anything to get
-the simulation working, it has been implemented for you.  But in future
-assignments you may be asked to implement part of the full simulation as
-well.  So you should try out the simulator and understand how it works.
+tests. For this first assignment, there is one thing that needs to be done
+to get your full system tests to pass.  There is an `operator<<()` that is called
+to output the current state of the Hypothetical Machine.  At the bottom of this
+function, a for loop has been commented out, that is making calls to your
+`peekAddress()` function.  This loop is being used to display the contents
+of memory.  Uncomment this loop and then try running full simulations and
+the system tests.
 
 The sim executable that is built uses the `HypothetheticalMachineSimulation`
 class you finished implementing to load and execute a program

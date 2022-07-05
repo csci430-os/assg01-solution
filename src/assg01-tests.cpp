@@ -18,12 +18,24 @@
 #include <string>
 using namespace std;
 
+// change these to #define when ready to begin working on each task,
+// once defined they will enable the tests declared below for each task
+#undef task1
+#undef task2
+#undef task3_1
+#undef task3_2
+#undef task4
+#undef task5
+#undef task6
+#undef task7
+
 /// simulator instance used for all of the tests
 HypotheticalMachineSimulator sim;
 
 /**
  * @brief Task 1: test memory initialization
  */
+#ifdef task1
 TEST_CASE("Task 1: <initializeMemory()> HypotheticalMachineController test memory initialization", "[task1]")
 {
   // make sure memory set correctly, especially memory size determined correctly
@@ -50,10 +62,12 @@ TEST_CASE("Task 1: <initializeMemory()> HypotheticalMachineController test memor
   CHECK_THROWS_AS(sim.initializeMemory(99, 1001), SimulatorException);
   CHECK_THROWS_AS(sim.initializeMemory(-5, 700), SimulatorException);
 }
+#endif
 
 /**
  * @brief Task 2: test memory address translation
  */
+#ifdef task2
 TEST_CASE("Task 2: <translateAddress()> HypotheticalMachineController test memory address translation", "[task2]")
 {
   // a typical memory address space to test first
@@ -88,10 +102,12 @@ TEST_CASE("Task 2: <translateAddress()> HypotheticalMachineController test memor
   CHECK_THROWS_AS(sim.translateAddress(186), SimulatorException);
   CHECK_THROWS_AS(sim.translateAddress(432), SimulatorException);
 }
+#endif
 
 /**
  * @brief Task 3: test memory access functions
  */
+#ifdef task3_1
 TEST_CASE("Task 3: <peek() and poke()> HypotheticalMachineController test memory peeks and pokes", "[task3]")
 {
   // a typical memory address space to test first
@@ -121,12 +137,14 @@ TEST_CASE("Task 3: <peek() and poke()> HypotheticalMachineController test memory
   CHECK_THROWS_AS(sim.pokeAddress(1000, 42), SimulatorException);
   CHECK_THROWS_AS(sim.peekAddress(1000), SimulatorException);
 }
+#endif
 
 /**
- * @brief Task 3: test program loading function.  Upon completion of first 3 tasks,
+ * @brief After Task 3: test program loading function.  Upon completion of first 3 tasks,
  *   the loadProgram() function should have all member methods implemented in order for
  *   it to be able to now load simulation programs from files.
  */
+#ifdef task3_2
 TEST_CASE("<loadProgram()> HypotheticalMachineController test program load", "[task3]")
 {
   // should be throwing exception when file name is not correct
@@ -175,10 +193,12 @@ TEST_CASE("<loadProgram()> HypotheticalMachineController test program load", "[t
   CHECK(sim.peekAddress(142) == 8);
   CHECK(sim.peekAddress(143) == 0);
 }
+#endif
 
 /**
  * @brief Task 4: test fetch phase
  */
+#ifdef task4
 TEST_CASE("Task 4: <fetch()> HypotheticalMachineController test fetch phase", "[task4]")
 {
   // load a program and check results of performing fetch cycles
@@ -238,10 +258,12 @@ TEST_CASE("Task 4: <fetch()> HypotheticalMachineController test fetch phase", "[
   CHECK(sim.getPC() == 54);
   sim.incrementPC();
 }
+#endif
 
 /**
  * @brief Task 5: test execute phase
  */
+#ifdef task5
 TEST_CASE("Task 5: <execute()> HypotheticalMachineController test ir translation in execute()", "[task5]")
 {
   // the execute() part of cycle starts out by translating
@@ -294,10 +316,12 @@ TEST_CASE("Task 5: <execute()> HypotheticalMachineController test ir translation
   CHECK(sim.getIROpcode() == 3);
   CHECK(sim.getIRAddress() == 51);
 }
+#endif
 
 /**
  * @brief Task 6: test load instruction
  */
+#ifdef task6
 TEST_CASE("Task 6: <executeLoad()> HypotheticalMachineController test load instruction", "[task6]")
 {
   // prog-03 tests load instructions
@@ -328,10 +352,12 @@ TEST_CASE("Task 6: <executeLoad()> HypotheticalMachineController test load instr
   sim.fetch();
   CHECK_THROWS_AS(sim.execute(), SimulatorException);
 }
+#endif
 
 /**
  * @brief Task 6: test store instruction
  */
+#ifdef task6
 TEST_CASE("Task 6: <executeStore()> HypotheticalMachineController test store instruction", "[task6]")
 {
   // prog-04 tests store instructions
@@ -365,10 +391,12 @@ TEST_CASE("Task 6: <executeStore()> HypotheticalMachineController test store ins
   sim.fetch();
   CHECK_THROWS_AS(sim.execute(), SimulatorException);
 }
+#endif
 
 /**
  * @brief Task 6: test add and subtract instructions
  */
+#ifdef task6
 TEST_CASE("Task 6: <executeAdd() and executeSubtract()> HypotheticalMachineController test add and subtract instructions", "[task 6]")
 {
   // prog-05 tests addition and subtraction
@@ -427,10 +455,12 @@ TEST_CASE("Task 6: <executeAdd() and executeSubtract()> HypotheticalMachineContr
   CHECK(sim.getIRAddress() == 705);
   CHECK(sim.getAC() == 30);
 }
+#endif
 
 /**
  * @brief Task 6: test jump instruction
  */
+#ifdef task6
 TEST_CASE("Task 6: <executeJump()> HypotheticalMachineController test jump instructions", "[task 6]")
 {
   // prog-06 tests jump instructions
@@ -461,10 +491,12 @@ TEST_CASE("Task 6: <executeJump()> HypotheticalMachineController test jump instr
   CHECK(sim.getIROpcode() == 0);
   CHECK(sim.getIRAddress() == 0);
 }
+#endif
 
 /**
  * @brief Task 7: test full simulation
  */
+#ifdef task7
 TEST_CASE("Task 7: <fetch/execute cycles> HypotheticalMachineController test execution simulation of whole programs", "[task7]")
 {
   // test program 01 execution
@@ -487,3 +519,4 @@ TEST_CASE("Task 7: <fetch/execute cycles> HypotheticalMachineController test exe
   CHECK(sim.getPC() == 52);
   CHECK(sim.getAC() == 104);
 }
+#endif
