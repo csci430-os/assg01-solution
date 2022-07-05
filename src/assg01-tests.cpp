@@ -36,32 +36,76 @@ HypotheticalMachineSimulator sim;
  * @brief Task 1: test memory initialization
  */
 #ifdef task1
-TEST_CASE("Task 1: <initializeMemory()> HypotheticalMachineController test memory initialization", "[task1]")
+TEST_CASE("Task 1: <initializeMemory()> memory initialization simple values", "[task1]")
 {
   // make sure memory set correctly, especially memory size determined correctly
-  sim.initializeMemory(300, 1000);
+  sim.initializeMemory(300, 999);
   CHECK(sim.getMemoryBaseAddress() == 300);
-  CHECK(sim.getMemoryBoundsAddress() == 1000);
+  CHECK(sim.getMemoryBoundsAddress() == 999);
   CHECK(sim.getMemorySize() == 700);
+}
 
+TEST_CASE("Task 1: <initializeMemory()> reset of simulation", "[task1]")
+{
   // reset should be working to reset state of simulator
   sim.reset();
   CHECK(sim.getMemoryBaseAddress() == 0);
   CHECK(sim.getMemoryBoundsAddress() == 0);
   CHECK(sim.getMemorySize() == 0);
+}
 
+TEST_CASE("Task 1: <initializeMemory()> memory initialization more complex ", "[task1]")
+{
   // another random test
   sim.initializeMemory(42, 917);
   CHECK(sim.getMemoryBaseAddress() == 42);
   CHECK(sim.getMemoryBoundsAddress() == 917);
-  CHECK(sim.getMemorySize() == (917 - 42));
+  CHECK(sim.getMemorySize() == (917 - 42 + 1));
+}
+
+TEST_CASE("Task 1: <initializeMemory()> memory initialization error conditions", "[task1]")
+{
 
   // we use XYYY addresses, where X is an opcode and YYY is a reference
   // address, thus memory can't exceed 1000, only valid memory is 0 - 999
   sim.reset();
-  CHECK_THROWS_AS(sim.initializeMemory(99, 1001), SimulatorException);
-  CHECK_THROWS_AS(sim.initializeMemory(-5, 700), SimulatorException);
+
+  // a bounds address of 1000 or bigger should throw an exception
+  CHECK_THROWS_AS(sim.initializeMemory(99, 1000), SimulatorException);
+  CHECK_THROWS_AS(sim.initializeMemory(99, 5000), SimulatorException);
+
+  // a bounds address of less than 0 should be an error
+  CHECK_THROWS_AS(sim.initializeMemory(99, -1), SimulatorException);
+
+  // a base address of 1000 or bigger should throw an exception
+  CHECK_THROWS_AS(sim.initializeMemory(5000, 700), SimulatorException);
+  CHECK_THROWS_AS(sim.initializeMemory(-10, 200), SimulatorException);
+
+  // memory that is negative in size, e.g. base address > bounds, is illegal
+  CHECK_THROWS_AS(sim.initializeMemory(701, 700), SimulatorException);
+  CHECK_THROWS_AS(sim.initializeMemory(1, 0), SimulatorException);
 }
+
+TEST_CASE("Task 1: <initializeMemory()> edge cases of memory initialization", "[task1]")
+{
+
+  // simulation with memory starting at base address 0 to 999 is valid
+  sim.reset();
+  sim.initializeMemory(0, 999);
+  CHECK(sim.getMemoryBaseAddress() == 0);
+  CHECK(sim.getMemoryBoundsAddress() == 999);
+  CHECK(sim.getMemorySize() == 1000);
+
+  // simulation with memory size of 1 is possible
+  sim.reset();
+  sim.initializeMemory(10, 10);
+  CHECK(sim.getMemoryBaseAddress() == 10);
+  CHECK(sim.getMemoryBoundsAddress() == 10);
+  CHECK(sim.getMemorySize() == 1);
+}
+
+// NOTE: we really should test if you initialize all of memory to have 0 values, but we cannot
+//   test this until we implement the peekAddress().
 #endif
 
 /**
