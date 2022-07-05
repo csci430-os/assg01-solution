@@ -6,7 +6,7 @@
     "C_Cpp.default.includePath": [
         "${workspaceFolder}/include",
         "${workspaceFolder}"
-    ]
+    ],
     "testMate.cpp.test.advancedExecutables": [
         {
             "pattern": "./**/*{test,Test,TEST}*",
