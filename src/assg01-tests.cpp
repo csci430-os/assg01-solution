@@ -239,7 +239,7 @@ TEST_CASE("Task 3: <peek() and poke()> poke and peak error checking", "[task3]")
  *   first.
  */
 #ifdef task3_2
-TEST_CASE("<loadProgram()> HypotheticalMachineController test program load", "[task3]")
+TEST_CASE("Task 3: <loadProgram()> HypotheticalMachineController test program load", "[task3]")
 {
   // should be throwing exception when file name is not correct
   string progFile = "simfiles/badfile.sim";
@@ -293,7 +293,7 @@ TEST_CASE("<loadProgram()> HypotheticalMachineController test program load", "[t
  * @brief Task 4: test fetch phase
  */
 #ifdef task4
-TEST_CASE("Task 4: <fetch()> HypotheticalMachineController test fetch phase", "[task4]")
+TEST_CASE("Task 4: <fetch()> test fetch phase for prog-01", "[task4]")
 {
   // load a program and check results of performing fetch cycles
   string progFile = "simfiles/prog-01.sim";
@@ -320,9 +320,12 @@ TEST_CASE("Task 4: <fetch()> HypotheticalMachineController test fetch phase", "[
   CHECK(sim.getIR() == 0);
   CHECK(sim.getPC() == 303);
   sim.incrementPC();
+}
 
+TEST_CASE("Task 4: <fetch()> test fetch phase for prog-02", "[task4]")
+{
   // load a second program and step through it
-  progFile = "simfiles/prog-02.sim";
+  string progFile = "simfiles/prog-02.sim";
   sim.loadProgram(progFile);
 
   // initially in prog-01 PC is 300, should fetch instruction 1940
