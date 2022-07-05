@@ -7,4 +7,11 @@
         "${workspaceFolder}/include",
         "${workspaceFolder}"
     ]
+    "testMate.cpp.test.advancedExecutables": [
+        {
+            "pattern": "./**/*{test,Test,TEST}*",
+            "cwd": "${workspaceFolder}",
+            "env": {}
+        }
+    ]    
 }
