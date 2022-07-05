@@ -624,7 +624,7 @@ TEST_CASE("Task 6: <executeJump()>  jump instructions", "[task 6]")
  * @brief Task 7: test full simulation
  */
 #ifdef task7
-TEST_CASE("Task 7: <fetch/execute cycles> HypotheticalMachineController test execution simulation of whole programs", "[task7]")
+TEST_CASE("Task 7: <fetch/execute cycles> simulation of whole program prog-01", "[task7]")
 {
   // test program 01 execution
   string progFile = "simfiles/prog-01.sim";
@@ -635,13 +635,16 @@ TEST_CASE("Task 7: <fetch/execute cycles> HypotheticalMachineController test exe
   CHECK(sim.getPC() == 303);
   CHECK(sim.getAC() == 5);
   CHECK(sim.peekAddress(941) == 5);
+}
 
+TEST_CASE("Task 7: <fetch/execute cycles> simulation of whole programs prog-02", "[task7]")
+{
   // test program 02 execution
   // has an infinite loop so will run for the max cycles
-  progFile = "simfiles/prog-02.sim";
+  string progFile = "simfiles/prog-02.sim";
   sim.loadProgram(progFile);
 
-  cycle = sim.runSimulation();
+  int cycle = sim.runSimulation();
   CHECK(cycle == 100);
   CHECK(sim.getPC() == 52);
   CHECK(sim.getAC() == 104);
