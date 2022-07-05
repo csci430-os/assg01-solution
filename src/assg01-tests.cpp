@@ -361,7 +361,7 @@ TEST_CASE("Task 4: <fetch()> test fetch phase for prog-02", "[task4]")
  * @brief Task 5: test execute phase
  */
 #ifdef task5
-TEST_CASE("Task 5: <execute()> HypotheticalMachineController test ir translation in execute()", "[task5]")
+TEST_CASE("Task 5: <execute()> ir translation in execute() for prog-01", "[task5]")
 {
   // the execute() part of cycle starts out by translating
   // the fetched ir into opcode and address parts, test these are translated
@@ -385,6 +385,23 @@ TEST_CASE("Task 5: <execute()> HypotheticalMachineController test ir translation
   sim.execute();
   CHECK(sim.getIROpcode() == 2);
   CHECK(sim.getIRAddress() == 941);
+}
+
+TEST_CASE("Task 5: <execute()> test execution of error value", "[task5]")
+{
+  // the execute() part of cycle starts out by translating
+  // the fetched ir into opcode and address parts, test these are translated
+  // correctly
+  string progFile = "simfiles/prog-01.sim";
+  sim.loadProgram(progFile);
+  sim.fetch();
+  sim.execute();
+
+  sim.fetch();
+  sim.execute();
+
+  sim.fetch();
+  sim.execute();
 
   // test that a nonsensical ir value is detected
   sim.pokeAddress(303, 10000); // only values of 0000 - 9999 make sense in this sim
@@ -392,8 +409,18 @@ TEST_CASE("Task 5: <execute()> HypotheticalMachineController test ir translation
   CHECK(sim.getIR() == 10000);
   CHECK_THROWS_AS(sim.execute(), SimulatorException);
 
+  // PC should not be incremented, try a negative value in ir
+  sim.pokeAddress(303, -5); // only values of 0000 - 9999 make sense in this sim
+  sim.fetch();
+  CHECK(sim.getIR() == -5);
+  CHECK_THROWS_AS(sim.execute(), SimulatorException);
+}
+
+TEST_CASE("Task 5: <execute()> ir translation in execute() for prog-02", "[task5]")
+{
+
   // check a second set of translations to ensure working
-  progFile = "simfiles/prog-02.sim";
+  string progFile = "simfiles/prog-02.sim";
   sim.loadProgram(progFile);
   sim.fetch();
   CHECK(sim.getIR() == 1141);
