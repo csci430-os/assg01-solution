@@ -26,7 +26,10 @@ using namespace std;
 #undef task3_2
 #undef task4
 #undef task5
-#undef task6
+#undef task6_1  // executeLoad()
+#undef task6_2  // executeStore()
+#undef task6_3  // executeAdd() and executeSub()
+#undef task6_4  // executeJump()
 #undef task7
 
 /// simulator instance used for all of the tests
@@ -445,8 +448,8 @@ TEST_CASE("Task 5: <execute()> ir translation in execute() for prog-02", "[task5
 /**
  * @brief Task 6: test load instruction
  */
-#ifdef task6
-TEST_CASE("Task 6: <executeLoad()> HypotheticalMachineController test load instruction", "[task6]")
+#ifdef task6_1
+TEST_CASE("Task 6: <executeLoad()> load instruction", "[task6]")
 {
   // prog-03 tests load instructions
   string progFile = "simfiles/prog-03.sim";
@@ -481,8 +484,8 @@ TEST_CASE("Task 6: <executeLoad()> HypotheticalMachineController test load instr
 /**
  * @brief Task 6: test store instruction
  */
-#ifdef task6
-TEST_CASE("Task 6: <executeStore()> HypotheticalMachineController test store instruction", "[task6]")
+#ifdef task6_2
+TEST_CASE("Task 6: <executeStore()> store instruction", "[task6]")
 {
   // prog-04 tests store instructions
   string progFile = "simfiles/prog-04.sim";
@@ -520,8 +523,8 @@ TEST_CASE("Task 6: <executeStore()> HypotheticalMachineController test store ins
 /**
  * @brief Task 6: test add and subtract instructions
  */
-#ifdef task6
-TEST_CASE("Task 6: <executeAdd() and executeSubtract()> HypotheticalMachineController test add and subtract instructions", "[task 6]")
+#ifdef task6_3
+TEST_CASE("Task 6: <executeAdd() and executeSubtract()>  add and subtract instructions", "[task 6]")
 {
   // prog-05 tests addition and subtraction
   string progFile = "simfiles/prog-05.sim";
@@ -584,8 +587,8 @@ TEST_CASE("Task 6: <executeAdd() and executeSubtract()> HypotheticalMachineContr
 /**
  * @brief Task 6: test jump instruction
  */
-#ifdef task6
-TEST_CASE("Task 6: <executeJump()> HypotheticalMachineController test jump instructions", "[task 6]")
+#ifdef task6_4
+TEST_CASE("Task 6: <executeJump()>  jump instructions", "[task 6]")
 {
   // prog-06 tests jump instructions
   string progFile = "simfiles/prog-06.sim";
