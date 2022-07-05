@@ -170,29 +170,59 @@ TEST_CASE("Task 2: <translateAddress()>  more complex illegal address translatio
  * @brief Task 3: test memory access functions
  */
 #ifdef task3_1
-TEST_CASE("Task 3: <peek() and poke()> HypotheticalMachineController test memory peeks and pokes", "[task3]")
+TEST_CASE("Task 3: <peek() and poke()> check memory initialization", "[task3]")
+{
+  // We couldn't test that you were allocating memory and initializing all values to 0
+  // until we had a peak() implementation.  pokes and peaks may crash if you are not
+  // dynamically allocating memory, reread task 1 if you get a runtime crash trying
+  // to access memory for the first time here
+  sim.reset();
+  sim.initializeMemory(300, 999);
+
+  CHECK(sim.peekAddress(300) == 0);
+  CHECK(sim.peekAddress(999) == 0);
+
+  for (int simAddress = 300; simAddress <= 999; simAddress++)
+  {
+    CHECK(sim.peekAddress(simAddress) == 0);
+  }
+}
+
+TEST_CASE("Task 3: <peek() and poke()> basic  memory peeks and pokes", "[task3]")
 {
   // a typical memory address space to test first
-  sim.initializeMemory(300, 1000);
+  sim.reset();
+  sim.initializeMemory(300, 999);
   CHECK(sim.getMemoryBaseAddress() == 300);
-  CHECK(sim.getMemoryBoundsAddress() == 1000);
+  CHECK(sim.getMemoryBoundsAddress() == 999);
   CHECK(sim.getMemorySize() == 700);
 
   // poke some random locations then peek and make sure
   // we get same value back
+  CHECK(sim.peekAddress(300) == 0);
   sim.pokeAddress(300, 42);
   CHECK(sim.peekAddress(300) == 42);
 
+  CHECK(sim.peekAddress(999) == 0);
   sim.pokeAddress(999, 1867);
   CHECK(sim.peekAddress(999) == 1867);
 
+  CHECK(sim.peekAddress(456) == 0);
   sim.pokeAddress(456, 789);
   CHECK(sim.peekAddress(456) == 789);
 
+  CHECK(sim.peekAddress(789) == 0);
   sim.pokeAddress(789, 456);
   CHECK(sim.peekAddress(789) == 456);
+}
 
-  // should still be illegal to peek and poke to addresses beyond
+TEST_CASE("Task 3: <peek() and poke()> poke and peak error checking", "[task3]")
+{
+  // a typical memory address space to test first
+  sim.reset();
+  sim.initializeMemory(300, 999);
+
+  // should  be illegal to peek and poke to addresses beyond
   // our simulation memory address space
   CHECK_THROWS_AS(sim.pokeAddress(299, 42), SimulatorException);
   CHECK_THROWS_AS(sim.peekAddress(299), SimulatorException);
@@ -204,7 +234,9 @@ TEST_CASE("Task 3: <peek() and poke()> HypotheticalMachineController test memory
 /**
  * @brief After Task 3: test program loading function.  Upon completion of first 3 tasks,
  *   the loadProgram() function should have all member methods implemented in order for
- *   it to be able to now load simulation programs from files.
+ *   it to be able to now load simulation programs from files.  But you do need to uncomment
+ *   the calls to pokeAddress() and initializeMemory() in the loadProgram() member function
+ *   first.
  */
 #ifdef task3_2
 TEST_CASE("<loadProgram()> HypotheticalMachineController test program load", "[task3]")
@@ -221,7 +253,7 @@ TEST_CASE("<loadProgram()> HypotheticalMachineController test program load", "[t
   CHECK(sim.getAC() == 0);
   CHECK(sim.getIR() == 0);
   CHECK(sim.getMemoryBaseAddress() == 300);
-  CHECK(sim.getMemoryBoundsAddress() == 1000);
+  CHECK(sim.getMemoryBoundsAddress() == 999);
   CHECK(sim.getMemorySize() == 700);
 
   // test memory was loaded as expected
@@ -242,7 +274,7 @@ TEST_CASE("<loadProgram()> HypotheticalMachineController test program load", "[t
   CHECK(sim.getIR() == 0);
   CHECK(sim.getMemoryBaseAddress() == 50);
   CHECK(sim.getMemoryBoundsAddress() == 150);
-  CHECK(sim.getMemorySize() == 100);
+  CHECK(sim.getMemorySize() == 101);
 
   // test memory was loaded as expected
   CHECK(sim.peekAddress(50) == 1141);

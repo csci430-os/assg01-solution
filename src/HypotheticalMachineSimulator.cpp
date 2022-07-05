@@ -245,7 +245,7 @@ void HypotheticalMachineSimulator::loadProgram(string programFile)
  * remember it needs to be translated to the real address
  * before poke occurs.
  *
- * @param simAddress The virtual simulation address we are to write
+ * @param virtualAddress The virtual simulation address we are to write
  *   the value into.
  * @param value The value to be written into the indicated virtual
  *   address.
@@ -260,7 +260,7 @@ void HypotheticalMachineSimulator::loadProgram(string programFile)
  * so remember it needs to be translated to the real address before
  * peek occurs
  *
- * @param simAddress The virtual address we should access and read
+ * @param virtualAddress The virtual address we should access and read
  *   a value from.
  *
  * @returns int The value that is currently in the indicated virtual
