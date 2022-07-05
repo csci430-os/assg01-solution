@@ -112,39 +112,57 @@ TEST_CASE("Task 1: <initializeMemory()> edge cases of memory initialization", "[
  * @brief Task 2: test memory address translation
  */
 #ifdef task2
-TEST_CASE("Task 2: <translateAddress()> HypotheticalMachineController test memory address translation", "[task2]")
+TEST_CASE("Task 2: <translateAddress()>  basic memory address translation", "[task2]")
 {
   // a typical memory address space to test first
-  sim.initializeMemory(300, 1000);
+  sim.initializeMemory(300, 999);
   CHECK(sim.getMemoryBaseAddress() == 300);
-  CHECK(sim.getMemoryBoundsAddress() == 1000);
+  CHECK(sim.getMemoryBoundsAddress() == 999);
   CHECK(sim.getMemorySize() == 700);
 
   // test some translations of addresses in this address space
   CHECK(sim.translateAddress(300) == 0);
   CHECK(sim.translateAddress(476) == 176);
   CHECK(sim.translateAddress(999) == 699); // last legal address in ths address space
+}
+
+TEST_CASE("Task 2: <translateAddress()>  basic illegal translation requests", "[task2]")
+{
+  // a typical memory address space to test first
+  sim.reset();
+  sim.initializeMemory(300, 999);
 
   // check bounds testing, we should get exception if try and reference an
   // illegal address
   CHECK_THROWS_AS(sim.translateAddress(299), SimulatorException);
   CHECK_THROWS_AS(sim.translateAddress(1000), SimulatorException);
+}
 
+TEST_CASE("Task 2: <translateAddress()>  more complex memory address translation", "[task2]")
+{
   // a second more difficult memory address space
+  sim.reset();
   sim.initializeMemory(187, 432);
   CHECK(sim.getMemoryBaseAddress() == 187);
   CHECK(sim.getMemoryBoundsAddress() == 432);
-  CHECK(sim.getMemorySize() == (432 - 187));
+  CHECK(sim.getMemorySize() == (432 - 187 + 1));
 
   // test some translations of addresses in this address space
   CHECK(sim.translateAddress(187) == 0);
   CHECK(sim.translateAddress(217) == 30);
-  CHECK(sim.translateAddress(432 - 1) == (432 - 187 - 1)); // last legal address in ths address space
+  CHECK(sim.translateAddress(432) == (432 - 187)); // last legal address in ths address space
+}
+
+TEST_CASE("Task 2: <translateAddress()>  more complex illegal address translations", "[task2]")
+{
+  // a second more difficult memory address space
+  sim.reset();
+  sim.initializeMemory(187, 432);
 
   // check bounds testing, we should get exception if try and reference an
   // illegal address
   CHECK_THROWS_AS(sim.translateAddress(186), SimulatorException);
-  CHECK_THROWS_AS(sim.translateAddress(432), SimulatorException);
+  CHECK_THROWS_AS(sim.translateAddress(433), SimulatorException);
 }
 #endif
 

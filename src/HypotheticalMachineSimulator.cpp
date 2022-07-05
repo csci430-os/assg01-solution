@@ -227,7 +227,7 @@ void HypotheticalMachineSimulator::loadProgram(string programFile)
  * reference.  In addition we check the final bounds and throw an exception
  * for an illegal memory access attempt.
  *
- * @param simAddress The virtual or simulated address that we should translate to
+ * @param virtualAddress The virtual or simulated address that we should translate to
  *   the real address/index.
  *
  * @exception Throws SimulatorException if the simAddress
