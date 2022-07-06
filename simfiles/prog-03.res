@@ -128,4 +128,9 @@ Memory
 190: 123
 
 Simulation run resulted in runtime error occurring:
-translateAddress: Memory bounds access error, illegal reference to address: 200
+<HypotheticalMachineSimulator:translateAddress> error illegal virtual address given 
+   address to translate must be valid for this simulation
+   virtualAddress: 200
+   memoryBaseAddress: 100
+   memoryBoundsAddress: 199
+
