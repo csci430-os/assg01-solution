@@ -524,7 +524,7 @@ TEST_CASE("Task 6: <executeStore()> store instruction", "[task6]")
  * @brief Task 6: test add and subtract instructions
  */
 #ifdef task6_3
-TEST_CASE("Task 6: <executeAdd() and executeSubtract()>  add and subtract instructions", "[task 6]")
+TEST_CASE("Task 6: <executeAdd() and executeSubtract()>  add and subtract instructions", "[task6]")
 {
   // prog-05 tests addition and subtraction
   string progFile = "simfiles/prog-05.sim";
@@ -588,7 +588,7 @@ TEST_CASE("Task 6: <executeAdd() and executeSubtract()>  add and subtract instru
  * @brief Task 6: test jump instruction
  */
 #ifdef task6_4
-TEST_CASE("Task 6: <executeJump()>  jump instructions", "[task 6]")
+TEST_CASE("Task 6: <executeJump()> jump instructions", "[task6]")
 {
   // prog-06 tests jump instructions
   string progFile = "simfiles/prog-06.sim";
