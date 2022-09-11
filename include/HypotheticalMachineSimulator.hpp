@@ -86,6 +86,8 @@ public:
 
   // program execution, declare fetch and execute member functions here
   int translateAddress(int virtualAddress) const;
+  void pokeAddress(int virtualAddress, int value);
+  int peekAddress(int virtualAddress) const;
   int runSimulation(int maxCycles = 100, bool verbose = false);
 
   // accessor methods, mostly for testing

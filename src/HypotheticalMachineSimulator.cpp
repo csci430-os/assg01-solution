@@ -338,7 +338,11 @@ int HypotheticalMachineSimulator::translateAddress(int virtualAddress) const
  * @param value The value to be written into the indicated virtual
  *   address.
  */
-// your implementation of pokeAddress() should go here
+void HypotheticalMachineSimulator::pokeAddress(int virtualAddress, int value)
+{
+  int realAddress = translateAddress(virtualAddress);
+  memory[realAddress] = value;
+}
 
 /**
  * @brief peek memory
@@ -354,7 +358,11 @@ int HypotheticalMachineSimulator::translateAddress(int virtualAddress) const
  * @returns int The value that is currently in the indicated virtual
  *   memory address we are reading from and returning.
  */
-// your implementation of peekAddress() should go here
+int HypotheticalMachineSimulator::peekAddress(int virtualAddress) const
+{
+  int realAddress = translateAddress(virtualAddress);
+  return memory[realAddress];
+}
 
 /**
  * @brief fetch phase
