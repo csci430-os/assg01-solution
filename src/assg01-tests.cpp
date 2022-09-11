@@ -30,7 +30,7 @@ using namespace std;
 #define task6_2 // executeStore()
 #define task6_3 // executeAdd() and executeSub()
 #define task6_4 // executeJump()
-#undef task7
+#define task7
 
 /// simulator instance used for all of the tests
 HypotheticalMachineSimulator sim;
