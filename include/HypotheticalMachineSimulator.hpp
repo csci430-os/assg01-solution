@@ -88,6 +88,7 @@ public:
   int translateAddress(int virtualAddress) const;
   void pokeAddress(int virtualAddress, int value);
   int peekAddress(int virtualAddress) const;
+  void fetch();
   int runSimulation(int maxCycles = 100, bool verbose = false);
 
   // accessor methods, mostly for testing

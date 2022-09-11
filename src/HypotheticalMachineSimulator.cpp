@@ -372,7 +372,12 @@ int HypotheticalMachineSimulator::peekAddress(int virtualAddress) const
  * instruction, which is basically all that occurs during the fetch
  * phase of a cycle.
  */
-// your implementation of fetch() should go here
+void HypotheticalMachineSimulator::fetch()
+{
+  // load the instruction register, using PC as index of
+  // instruction to fetch.
+  ir = peekAddress(pc);
+}
 
 /**
  * @brief execute phase
