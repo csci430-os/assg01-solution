@@ -390,7 +390,38 @@ void HypotheticalMachineSimulator::fetch()
  * PC is also incremented during the execute phase in preparation
  * for the next fetch.
  */
-// your implementation of execute() should go here
+void HypotheticalMachineSimulator::execute()
+{
+  // decode the instruction register, first decimal digit is
+  // the opcode, last 3 digits are the reference address/value
+  // Largest maximum instruction is 9999, throw exception immediately
+  // if we see something nonsensical
+  if ((ir < 0) or (ir > 9999))
+  {
+    ostringstream msg;
+    msg << "Error: execute: invalid instruction, out of range, ir: " << ir;
+    throw SimulatorException(msg.str());
+  }
+
+  // decode the opcode and address from the instruction register.
+  // Use integer division and modulus division to get 4th digit and first 3 digits
+  // respectively, to translate the opcode and address reference from the ir
+  irOpcode = static_cast<OpcodeMnemonic>(ir / 1000);
+  irAddress = ir % 1000;
+
+  // if this is a noop/halt we don't increment pc, but otherwise
+  // increment pc in preparation for next fetch cycle
+  // NOTE: in future we should change the simulation so that
+  // we don't need this special case for NOOPS maybe?
+  if (irOpcode != NOOP_HALT)
+  {
+    incrementPC();
+  }
+
+  // use table lookup to translate opcode into function to call to perform
+  // specific operation indicated
+  // Add in swtch statement here later to call/handle individual opcode executions.
+}
 
 /**
  * @brief execute load

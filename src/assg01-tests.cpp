@@ -25,7 +25,7 @@ using namespace std;
 #define task3_1
 #define task3_2
 #define task4
-#undef task5
+#define task5
 #undef task6_1 // executeLoad()
 #undef task6_2 // executeStore()
 #undef task6_3 // executeAdd() and executeSub()
