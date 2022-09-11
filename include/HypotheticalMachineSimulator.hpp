@@ -85,6 +85,7 @@ public:
   void initializeMemory(int memoryBaseAddress, int memoryBoundsAddress);
 
   // program execution, declare fetch and execute member functions here
+  int translateAddress(int virtualAddress) const;
   int runSimulation(int maxCycles = 100, bool verbose = false);
 
   // accessor methods, mostly for testing
