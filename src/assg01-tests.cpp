@@ -26,10 +26,10 @@ using namespace std;
 #define task3_2
 #define task4
 #define task5
-#undef task6_1 // executeLoad()
-#undef task6_2 // executeStore()
-#undef task6_3 // executeAdd() and executeSub()
-#undef task6_4 // executeJump()
+#define task6_1 // executeLoad()
+#define task6_2 // executeStore()
+#define task6_3 // executeAdd() and executeSub()
+#define task6_4 // executeJump()
 #undef task7
 
 /// simulator instance used for all of the tests

@@ -420,7 +420,31 @@ void HypotheticalMachineSimulator::execute()
 
   // use table lookup to translate opcode into function to call to perform
   // specific operation indicated
-  // Add in swtch statement here later to call/handle individual opcode executions.
+  switch (irOpcode)
+  {
+  case NOOP_HALT:
+    // do nothing
+    break;
+  case LOAD:
+    executeLoad();
+    break;
+  case STORE:
+    executeStore();
+    break;
+  case JMP:
+    executeJmp();
+    break;
+  case SUB:
+    executeSub();
+    break;
+  case ADD:
+    executeAdd();
+    break;
+  default:
+    ostringstream msg;
+    msg << "Error: execute: invalid opcode seen, ir=" << ir;
+    throw SimulatorException(msg.str());
+  }
 }
 
 /**
@@ -429,7 +453,12 @@ void HypotheticalMachineSimulator::execute()
  * Execute a load instruction.
  * @pre current irOpcode is a LOAD when called.
  */
-// your implementation of executeLoad() should go here
+void HypotheticalMachineSimulator::executeLoad()
+{
+  // for load, the irAddress gives us the reference address to fetch value from into
+  // the accumulator
+  ac = peekAddress(irAddress);
+}
 
 /**
  * @brief execute store
@@ -437,15 +466,24 @@ void HypotheticalMachineSimulator::execute()
  * Execute a store instruction.
  * @pre current irOpcode is a STORE when called
  */
-// your implementation of executeStore() should go here
+void HypotheticalMachineSimulator::executeStore()
+{
+  // for load, the irAddress gives us the reference address to fetch value from into
+  // the accumulator
+  pokeAddress(irAddress, ac);
+}
 
 /**
  * @brief execute add
  *
  * Execute an add instruction.
- * @[re current irOpcode is an ADD when called
+ * @pre current irOpcode is an ADD when called
  */
-// your implementation of executeAdd() should go here
+void HypotheticalMachineSimulator::executeAdd()
+{
+  // execute the indicated add
+  ac = ac + peekAddress(irAddress);
+}
 
 /**
  * @brief execute sub
@@ -453,7 +491,11 @@ void HypotheticalMachineSimulator::execute()
  * Execute a subtract instruction.
  * @pre current irOpcode is a SUB when called
  */
-// your implementation of executeSub() should go here
+void HypotheticalMachineSimulator::executeSub()
+{
+  // execute the indicated subtract
+  ac = ac - peekAddress(irAddress);
+}
 
 /**
  * @brief execute jmp
@@ -461,7 +503,11 @@ void HypotheticalMachineSimulator::execute()
  * Execute a jump instruction.
  * @pre current irOpcode is a JMP when called
  */
-// your implementation of executeJmp() should go here
+void HypotheticalMachineSimulator::executeJmp()
+{
+  // execute the indicated jump instruction
+  pc = irAddress;
+}
 
 /**
  * @brief run simulation

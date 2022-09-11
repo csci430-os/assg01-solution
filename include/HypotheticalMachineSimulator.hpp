@@ -90,6 +90,11 @@ public:
   int peekAddress(int virtualAddress) const;
   void fetch();
   void execute();
+  void executeLoad();
+  void executeStore();
+  void executeAdd();
+  void executeSub();
+  void executeJmp();
   int runSimulation(int maxCycles = 100, bool verbose = false);
 
   // accessor methods, mostly for testing
