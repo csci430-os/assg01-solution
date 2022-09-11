@@ -318,7 +318,11 @@ int HypotheticalMachineSimulator::translateAddress(int virtualAddress) const
   if ((realAddress < 0) or (realAddress >= memorySize))
   {
     ostringstream msg;
-    msg << "translateAddress: Memory bounds access error, illegal reference to address: " << virtualAddress;
+    msg << "<HypotheticalMachineSimulator:translateAddress> error illegal virtual address given" << endl
+        << "   address to translate must be valid for this simulation" << endl
+        << "   virtualAddress: " << virtualAddress << endl
+        << "   memoryBaseAddress: " << memoryBaseAddress << endl
+        << "   memoryBoundsAddress: " << memoryBoundsAddress << endl;
     throw SimulatorException(msg.str());
   }
 
