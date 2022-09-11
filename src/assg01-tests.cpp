@@ -23,7 +23,7 @@ using namespace std;
 #define task1
 #define task2
 #define task3_1
-#undef task3_2
+#define task3_2
 #undef task4
 #undef task5
 #undef task6_1 // executeLoad()
