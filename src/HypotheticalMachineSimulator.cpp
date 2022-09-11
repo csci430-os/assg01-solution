@@ -174,7 +174,7 @@ void HypotheticalMachineSimulator::loadProgram(string programFile)
   {
     throw SimulatorException("Error: expecting MEM from program file");
   }
-  
+
   // Task 3.2: uncomment this call to initializeMemory() once you have completed
   // task 3
   // initializeMemory(memoryBaseAddress, memoryBoundsAddress);
@@ -187,8 +187,8 @@ void HypotheticalMachineSimulator::loadProgram(string programFile)
   while (programStream >> addr >> value)
   {
     // Task 3.2: uncomment this call to pokeAddress() once you have completed task 3
-    //pokeAddress(addr, value);
-    
+    // pokeAddress(addr, value);
+
     // keep track of memory addresses for display purposes
     memoryAddressList.push_back(addr);
   }
@@ -218,7 +218,78 @@ void HypotheticalMachineSimulator::loadProgram(string programFile)
  *   address.  Thus we can only address memory from 000 - 999
  *   given the limits of the expected opcode format.
  */
-// your implementation of initializeMemory() should go here
+/**
+ * @brief initialize memory
+ *
+ * Initialize the contents of memory.  Allocate array larget enough to
+ * hold memory contents for the program.  Record base and bounds
+ * address for memory address translation.  This memory function
+ * dynamically allocates enough memory to hold the addresses for the
+ * indicated begin and end memory ranges.
+ *
+ * @param memoryBaseAddress The int value for the base or beginning
+ *   address of the simulated memory address space for this
+ *   simulation.
+ * @param memoryBoundsAddress The int value for the bounding address,
+ *   e.g. the maximum or upper valid address of the simulated memory
+ *   address space for this simulation.
+ *
+ * @exception Throws SimulatorException if
+ *   address space is invalid.  Currently we support only 4 digit
+ *   opcodes XYYY, where the 3 digit YYY specifies a reference
+ *   address.  Thus we can only address memory from 000 - 999
+ *   given the limits of the expected opcode format.
+ */
+void HypotheticalMachineSimulator::initializeMemory(int memoryBaseAddress, int memoryBoundsAddress)
+{
+  // In this simulateion, we use XYYY where X is an opcode and YYY is a memory
+  // reference address.  This means memory is limited to addresses 000 - 999
+  if ((memoryBaseAddress < 0) or (memoryBaseAddress > 999) or (memoryBoundsAddress < 0) or (memoryBoundsAddress > 999))
+  {
+    ostringstream msg;
+    msg << "HypotheticalMachineSimulator::initializeMemory> Memory initialization error" << endl
+        << "  memory can't be below 0 or exceed 1000, 3 decimal digit memory references only" << endl
+        << "  memoryBaseAddress: " << memoryBaseAddress << endl
+        << "  memoryBoundsAddress: " << memoryBoundsAddress;
+    throw SimulatorException(msg.str());
+  }
+
+  // record memory properties needed for address translation operations
+  this->memoryBaseAddress = memoryBaseAddress;
+  this->memoryBoundsAddress = memoryBoundsAddress;
+
+  // memory size is difference of end minus begin, and add 1 because of 0 based
+  // indexing
+  this->memorySize = memoryBoundsAddress - memoryBaseAddress + 1;
+
+  // also memory should have at least 1 value to be meaningful, if memory size is 0 or negative
+  // then throw an exception
+  if (memorySize < 1)
+  {
+    ostringstream msg;
+    msg << "HypotheticalMachineSimulator::initializeMemory> Illegal memory range" << endl
+        << "  memory must be at least size 1 or larger to run simulations" << endl
+        << "  memoryBaseAddress: " << memoryBaseAddress << endl
+        << "  memoryBoundsAddress: " << memoryBoundsAddress << endl
+        << "  memorySize: " << memorySize;
+    throw SimulatorException(msg.str());
+  }
+  // if we have previous memory allocated, make sure it is free before allocating some more
+  if (memory)
+  {
+    delete[] memory;
+  }
+
+  // dynamically allocate a block of integers to use to represent
+  // our hypothetical machine memory
+  this->memory = new int[memorySize];
+
+  // initialize memory to all 0 values, we use 0 as noop/halt in this simulator
+  for (int addr = 0; addr < memorySize; addr++)
+  {
+    memory[addr] = 0;
+  }
+}
 
 /**
  * @brief memory address translation
@@ -551,7 +622,7 @@ ostream& operator<<(ostream& out, const HypotheticalMachineSimulator& sim)
     cout << setw(3) << left << addr << ": " << sim.peekAddress(addr) << endl;
   }
   */
-  
+
   cout << endl;
 
   return out;
