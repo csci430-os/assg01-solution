@@ -174,10 +174,10 @@ void HypotheticalMachineSimulator::loadProgram(string programFile)
   {
     throw SimulatorException("Error: expecting MEM from program file");
   }
-  
+
   // Task 3.2: uncomment this call to initializeMemory() once you have completed
   // task 3
-  // initializeMemory(memoryBaseAddress, memoryBoundsAddress);
+  initializeMemory(memoryBaseAddress, memoryBoundsAddress);
 
   // Finally load memory contents.  Remaining lines of file from
   // current line to last line are key/value pairs of
@@ -187,8 +187,8 @@ void HypotheticalMachineSimulator::loadProgram(string programFile)
   while (programStream >> addr >> value)
   {
     // Task 3.2: uncomment this call to pokeAddress() once you have completed task 3
-    //pokeAddress(addr, value);
-    
+    pokeAddress(addr, value);
+
     // keep track of memory addresses for display purposes
     memoryAddressList.push_back(addr);
   }
@@ -218,7 +218,78 @@ void HypotheticalMachineSimulator::loadProgram(string programFile)
  *   address.  Thus we can only address memory from 000 - 999
  *   given the limits of the expected opcode format.
  */
-// your implementation of initializeMemory() should go here
+/**
+ * @brief initialize memory
+ *
+ * Initialize the contents of memory.  Allocate array larget enough to
+ * hold memory contents for the program.  Record base and bounds
+ * address for memory address translation.  This memory function
+ * dynamically allocates enough memory to hold the addresses for the
+ * indicated begin and end memory ranges.
+ *
+ * @param memoryBaseAddress The int value for the base or beginning
+ *   address of the simulated memory address space for this
+ *   simulation.
+ * @param memoryBoundsAddress The int value for the bounding address,
+ *   e.g. the maximum or upper valid address of the simulated memory
+ *   address space for this simulation.
+ *
+ * @exception Throws SimulatorException if
+ *   address space is invalid.  Currently we support only 4 digit
+ *   opcodes XYYY, where the 3 digit YYY specifies a reference
+ *   address.  Thus we can only address memory from 000 - 999
+ *   given the limits of the expected opcode format.
+ */
+void HypotheticalMachineSimulator::initializeMemory(int memoryBaseAddress, int memoryBoundsAddress)
+{
+  // In this simulateion, we use XYYY where X is an opcode and YYY is a memory
+  // reference address.  This means memory is limited to addresses 000 - 999
+  if ((memoryBaseAddress < 0) or (memoryBaseAddress > 999) or (memoryBoundsAddress < 0) or (memoryBoundsAddress > 999))
+  {
+    ostringstream msg;
+    msg << "HypotheticalMachineSimulator::initializeMemory> Memory initialization error" << endl
+        << "  memory can't be below 0 or exceed 1000, 3 decimal digit memory references only" << endl
+        << "  memoryBaseAddress: " << memoryBaseAddress << endl
+        << "  memoryBoundsAddress: " << memoryBoundsAddress;
+    throw SimulatorException(msg.str());
+  }
+
+  // record memory properties needed for address translation operations
+  this->memoryBaseAddress = memoryBaseAddress;
+  this->memoryBoundsAddress = memoryBoundsAddress;
+
+  // memory size is difference of end minus begin, and add 1 because of 0 based
+  // indexing
+  this->memorySize = memoryBoundsAddress - memoryBaseAddress + 1;
+
+  // also memory should have at least 1 value to be meaningful, if memory size is 0 or negative
+  // then throw an exception
+  if (memorySize < 1)
+  {
+    ostringstream msg;
+    msg << "HypotheticalMachineSimulator::initializeMemory> Illegal memory range" << endl
+        << "  memory must be at least size 1 or larger to run simulations" << endl
+        << "  memoryBaseAddress: " << memoryBaseAddress << endl
+        << "  memoryBoundsAddress: " << memoryBoundsAddress << endl
+        << "  memorySize: " << memorySize;
+    throw SimulatorException(msg.str());
+  }
+  // if we have previous memory allocated, make sure it is free before allocating some more
+  if (memory)
+  {
+    delete[] memory;
+  }
+
+  // dynamically allocate a block of integers to use to represent
+  // our hypothetical machine memory
+  this->memory = new int[memorySize];
+
+  // initialize memory to all 0 values, we use 0 as noop/halt in this simulator
+  for (int addr = 0; addr < memorySize; addr++)
+  {
+    memory[addr] = 0;
+  }
+}
 
 /**
  * @brief memory address translation
@@ -235,7 +306,28 @@ void HypotheticalMachineSimulator::loadProgram(string programFile)
  * @returns int Returns the calculated real address translation of the simulated
  *   address.
  */
-// your implementation of translateAddress() should go here
+int HypotheticalMachineSimulator::translateAddress(int virtualAddress) const
+{
+  int realAddress;
+
+  // subtract the base address from the virtual address to get the
+  // real address/index in memory
+  realAddress = virtualAddress - memoryBaseAddress;
+
+  // memory bounds checking, throw exception if memory reference is out of bounds
+  if ((realAddress < 0) or (realAddress >= memorySize))
+  {
+    ostringstream msg;
+    msg << "<HypotheticalMachineSimulator:translateAddress> error illegal virtual address given" << endl
+        << "   address to translate must be valid for this simulation" << endl
+        << "   virtualAddress: " << virtualAddress << endl
+        << "   memoryBaseAddress: " << memoryBaseAddress << endl
+        << "   memoryBoundsAddress: " << memoryBoundsAddress << endl;
+    throw SimulatorException(msg.str());
+  }
+
+  return realAddress;
+}
 
 /**
  * @brief poke memory
@@ -250,7 +342,11 @@ void HypotheticalMachineSimulator::loadProgram(string programFile)
  * @param value The value to be written into the indicated virtual
  *   address.
  */
-// your implementation of pokeAddress() should go here
+void HypotheticalMachineSimulator::pokeAddress(int virtualAddress, int value)
+{
+  int realAddress = translateAddress(virtualAddress);
+  memory[realAddress] = value;
+}
 
 /**
  * @brief peek memory
@@ -266,7 +362,11 @@ void HypotheticalMachineSimulator::loadProgram(string programFile)
  * @returns int The value that is currently in the indicated virtual
  *   memory address we are reading from and returning.
  */
-// your implementation of peekAddress() should go here
+int HypotheticalMachineSimulator::peekAddress(int virtualAddress) const
+{
+  int realAddress = translateAddress(virtualAddress);
+  return memory[realAddress];
+}
 
 /**
  * @brief fetch phase
@@ -276,7 +376,12 @@ void HypotheticalMachineSimulator::loadProgram(string programFile)
  * instruction, which is basically all that occurs during the fetch
  * phase of a cycle.
  */
-// your implementation of fetch() should go here
+void HypotheticalMachineSimulator::fetch()
+{
+  // load the instruction register, using PC as index of
+  // instruction to fetch.
+  ir = peekAddress(pc);
+}
 
 /**
  * @brief execute phase
@@ -289,7 +394,62 @@ void HypotheticalMachineSimulator::loadProgram(string programFile)
  * PC is also incremented during the execute phase in preparation
  * for the next fetch.
  */
-// your implementation of execute() should go here
+void HypotheticalMachineSimulator::execute()
+{
+  // decode the instruction register, first decimal digit is
+  // the opcode, last 3 digits are the reference address/value
+  // Largest maximum instruction is 9999, throw exception immediately
+  // if we see something nonsensical
+  if ((ir < 0) or (ir > 9999))
+  {
+    ostringstream msg;
+    msg << "Error: execute: invalid instruction, out of range, ir: " << ir;
+    throw SimulatorException(msg.str());
+  }
+
+  // decode the opcode and address from the instruction register.
+  // Use integer division and modulus division to get 4th digit and first 3 digits
+  // respectively, to translate the opcode and address reference from the ir
+  irOpcode = static_cast<OpcodeMnemonic>(ir / 1000);
+  irAddress = ir % 1000;
+
+  // if this is a noop/halt we don't increment pc, but otherwise
+  // increment pc in preparation for next fetch cycle
+  // NOTE: in future we should change the simulation so that
+  // we don't need this special case for NOOPS maybe?
+  if (irOpcode != NOOP_HALT)
+  {
+    incrementPC();
+  }
+
+  // use table lookup to translate opcode into function to call to perform
+  // specific operation indicated
+  switch (irOpcode)
+  {
+  case NOOP_HALT:
+    // do nothing
+    break;
+  case LOAD:
+    executeLoad();
+    break;
+  case STORE:
+    executeStore();
+    break;
+  case JMP:
+    executeJmp();
+    break;
+  case SUB:
+    executeSub();
+    break;
+  case ADD:
+    executeAdd();
+    break;
+  default:
+    ostringstream msg;
+    msg << "Error: execute: invalid opcode seen, ir=" << ir;
+    throw SimulatorException(msg.str());
+  }
+}
 
 /**
  * @brief execute load
@@ -297,7 +457,12 @@ void HypotheticalMachineSimulator::loadProgram(string programFile)
  * Execute a load instruction.
  * @pre current irOpcode is a LOAD when called.
  */
-// your implementation of executeLoad() should go here
+void HypotheticalMachineSimulator::executeLoad()
+{
+  // for load, the irAddress gives us the reference address to fetch value from into
+  // the accumulator
+  ac = peekAddress(irAddress);
+}
 
 /**
  * @brief execute store
@@ -305,15 +470,24 @@ void HypotheticalMachineSimulator::loadProgram(string programFile)
  * Execute a store instruction.
  * @pre current irOpcode is a STORE when called
  */
-// your implementation of executeStore() should go here
+void HypotheticalMachineSimulator::executeStore()
+{
+  // for load, the irAddress gives us the reference address to fetch value from into
+  // the accumulator
+  pokeAddress(irAddress, ac);
+}
 
 /**
  * @brief execute add
  *
  * Execute an add instruction.
- * @[re current irOpcode is an ADD when called
+ * @pre current irOpcode is an ADD when called
  */
-// your implementation of executeAdd() should go here
+void HypotheticalMachineSimulator::executeAdd()
+{
+  // execute the indicated add
+  ac = ac + peekAddress(irAddress);
+}
 
 /**
  * @brief execute sub
@@ -321,7 +495,11 @@ void HypotheticalMachineSimulator::loadProgram(string programFile)
  * Execute a subtract instruction.
  * @pre current irOpcode is a SUB when called
  */
-// your implementation of executeSub() should go here
+void HypotheticalMachineSimulator::executeSub()
+{
+  // execute the indicated subtract
+  ac = ac - peekAddress(irAddress);
+}
 
 /**
  * @brief execute jmp
@@ -329,7 +507,11 @@ void HypotheticalMachineSimulator::loadProgram(string programFile)
  * Execute a jump instruction.
  * @pre current irOpcode is a JMP when called
  */
-// your implementation of executeJmp() should go here
+void HypotheticalMachineSimulator::executeJmp()
+{
+  // execute the indicated jump instruction
+  pc = irAddress;
+}
 
 /**
  * @brief run simulation
@@ -365,48 +547,46 @@ int HypotheticalMachineSimulator::runSimulation(int maxCycles, bool verbose)
   // after uncommenting the code below, you shold go back to the first failing
   // unit test and figure out and fix that issue, and proceed fixing issues 1
   // at a time.
-  /*
-     bool done = false;
+  bool done = false;
 
-     while (!done)
-     {
-     // perform fetch stage
-     fetch();
-     irOpcode = NOOP_HALT;
-     irAddress = 0;
-     if (verbose)
-     {
+  while (!done)
+  {
+    // perform fetch stage
+    fetch();
+    irOpcode = NOOP_HALT;
+    irAddress = 0;
+    if (verbose)
+    {
       cout << "==================== cycle: " << cycle + 1 << endl;
       cout << "-------------------- fetch" << endl;
       cout << *this;
-     }
+    }
 
-     // perform execute stage
-     execute();
-     if (verbose)
-     {
+    // perform execute stage
+    execute();
+    if (verbose)
+    {
       cout << "-------------------- execute" << endl;
       cout << *this;
-     }
+    }
 
-     // increment cycle counter for next cycle
-     cycle++;
+    // increment cycle counter for next cycle
+    cycle++;
 
-     // we are done if we exceed the maximum number of
-     // cycles to simulate
-     if (cycle >= maxCycles)
-     {
+    // we are done if we exceed the maximum number of
+    // cycles to simulate
+    if (cycle >= maxCycles)
+    {
       done = true;
-     }
+    }
 
-     // or we are done when we hit a NOOP_HALT
-     // instruction
-     if (irOpcode == NOOP_HALT)
-     {
+    // or we are done when we hit a NOOP_HALT
+    // instruction
+    if (irOpcode == NOOP_HALT)
+    {
       done = true;
-     }
-     }
-   */
+    }
+  }
 
   return cycle;
 }
@@ -545,13 +725,11 @@ ostream& operator<<(ostream& out, const HypotheticalMachineSimulator& sim)
   out << "Memory" << endl << "------" << endl;
   // uncomment the following once you have completed task 7 so that system tests
   // and full simulations will work
-  /*
   for (auto addr : sim.memoryAddressList)
   {
     cout << setw(3) << left << addr << ": " << sim.peekAddress(addr) << endl;
   }
-  */
-  
+
   cout << endl;
 
   return out;
